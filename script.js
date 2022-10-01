@@ -78,6 +78,35 @@ const generateAxis = () => {
     .attr("transform", "translate(" + padding + ", 0)");
 };
 
+const drawBars = (arr) => {
+  svg
+    .selectAll("rect")
+    .data(arr)
+    .enter()
+    .append("rect")
+    .attr("class", "bar")
+    //divide the width, so each bar will take the same amount of space
+    .attr("width", (width - padding * 2) / arr.length)
+    .attr("data-date", (item) => {
+      return item[0];
+    })
+    .attr("data-gdp", (item) => {
+      return item[1];
+    })
+    //use yScale which has been calcuated before to set bars' height
+    .attr("height", (item) => {
+      return yScale(item[1]);
+    })
+    //set each bar to the position which matched with its index
+    .attr("x", (item, index) => {
+      return xScale(index);
+    })
+    //make the bar chart upside down, stick to the x-axis and respect the padding and height
+    .attr("y", (item) => {
+      return height - padding - yScale(item[1]);
+    });
+};
+
 async function drawBarChart() {
   const response = await fetch(url);
   const data = await response.json();
@@ -85,6 +114,7 @@ async function drawBarChart() {
   drawContainer();
   generateScale(data.data);
   generateAxis();
+  drawBars(data.data);
 }
 
 drawBarChart();
