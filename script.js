@@ -117,7 +117,7 @@ const drawBars = (arr) => {
     //hover the bar will make the tooltip div visible and show the date of data
     .on("mouseover", (item) => {
       tooltip.transition().style("visibility", "visible");
-      tooltip.text(item[0]);
+      tooltip.text(`Date: ${item[0]}, GDP: $${item[1]} Billion`);
       //use querySelector to set attribute, item[0] is the date of data
       document.querySelector("#tooltip").setAttribute("data-date", item[0]);
     })
@@ -130,7 +130,6 @@ const drawBars = (arr) => {
 async function drawBarChart() {
   const response = await fetch(url);
   const data = await response.json();
-  console.log(data.data);
   drawContainer();
   generateScale(data.data);
   generateAxis();
