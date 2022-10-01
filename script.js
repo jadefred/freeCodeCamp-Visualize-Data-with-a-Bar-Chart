@@ -3,9 +3,12 @@ const url = "https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData
 const width = 800;
 const height = 400;
 const margin = 100;
+const padding = 30;
 
 let yScale;
 let xScale;
+let xAxisScale;
+let yAxisScale;
 
 let svg = d3.select("#svgContainer");
 
@@ -35,6 +38,28 @@ const generateScale = (arr) => {
     .scaleLinear()
     .domain([0, arr.length - 1])
     .range([padding, width - padding]);
+
+  //reformat the dates
+  let dateArray = arr.map((item) => {
+    return new Date(item[0]);
+  });
+
+  //x axis will be the listed earliest date to the latest date
+  xAxisScale = d3
+    .scaleTime()
+    .domain([d3.min(dateArray), d3.max(dateArray)])
+    .range([padding, width - padding]);
+
+  //y axis determine by the max value of data
+  yAxisScale = d3
+    .scaleLinear()
+    .domain([
+      0,
+      d3.max(arr, (item) => {
+        return item[1];
+      }),
+    ])
+    .range([height - padding, padding]);
 };
 
 async function drawBarChart() {
