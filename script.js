@@ -79,6 +79,15 @@ const generateAxis = () => {
 };
 
 const drawBars = (arr) => {
+  //create a div append to the body to show the text of tooltip
+  let tooltip = d3
+    .select("body")
+    .append("div")
+    .attr("id", "tooltip")
+    .style("visibility", "hidden")
+    .style("width", "auto")
+    .style("height", "auto");
+
   svg
     .selectAll("rect")
     .data(arr)
@@ -104,6 +113,17 @@ const drawBars = (arr) => {
     //make the bar chart upside down, stick to the x-axis and respect the padding and height
     .attr("y", (item) => {
       return height - padding - yScale(item[1]);
+    })
+    //hover the bar will make the tooltip div visible and show the date of data
+    .on("mouseover", (item) => {
+      tooltip.transition().style("visibility", "visible");
+      tooltip.text(item[0]);
+      //use querySelector to set attribute, item[0] is the date of data
+      document.querySelector("#tooltip").setAttribute("data-date", item[0]);
+    })
+    //change visibility back to hidden when mouse is not on the bar
+    .on("mouseout", (item) => {
+      tooltip.transition().style("visibility", "hidden");
     });
 };
 
