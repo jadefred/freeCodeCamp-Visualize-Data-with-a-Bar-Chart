@@ -3,20 +3,17 @@ const url = "https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData
 const width = 800;
 const height = 400;
 const margin = 100;
-const padding = 30;
+const padding = 40;
 
 let yScale;
 let xScale;
 let xAxisScale;
 let yAxisScale;
 
-let svg = d3.select("#svgContainer");
+let svg = d3.select("svg");
 
 const drawContainer = () => {
-  svg
-    .append("svg")
-    .attr("height", height + margin)
-    .attr("width", width + margin);
+  svg.attr("height", height).attr("width", width);
 };
 
 const generateScale = (arr) => {
@@ -62,12 +59,32 @@ const generateScale = (arr) => {
     .range([height - padding, padding]);
 };
 
+const generateAxis = () => {
+  //create variable to draw x, y axis depends on the axis scale calculated in former function
+  let xAxis = d3.axisBottom(xAxisScale);
+  let yAxis = d3.axisLeft(yAxisScale);
+
+  //draw x, y axis and use transform attribute to adjust position
+  svg
+    .append("g")
+    .call(xAxis)
+    .attr("id", "x-axis")
+    .attr("transform", "translate(0, " + (height - padding) + ")");
+
+  svg
+    .append("g")
+    .call(yAxis)
+    .attr("id", "y-axis")
+    .attr("transform", "translate(" + padding + ", 0)");
+};
+
 async function drawBarChart() {
   const response = await fetch(url);
   const data = await response.json();
   console.log(data.data);
   drawContainer();
   generateScale(data.data);
+  generateAxis();
 }
 
 drawBarChart();
